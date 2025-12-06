@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physisec Auditor - Start</title>
+    <link rel="stylesheet" href="main_page.css"> 
+</head>
+<body>
+    <script src="main_page.js"></script>
+    <div id="main-container">
+
+        <header id="main-header">
+            <h1 onclick="navigate('landing')">Physisec Auditor</h1>
+            <button id="header-start-audit-btn" class="btn blue-btn" onclick="showModal()">
+                Start Audit
+            </button>
+        </header>
+
+        <div id="landing-page" class="view-container">
+            <div class="hero-bg">
+                <div class="hero-content">
+                    <h1>Physisec Auditor</h1>
+                    <p class="subtitle">In-Memory Physical Security Auditing</p>
+                    <p class="description">Real-time vulnerability detection, OCR analysis, and comprehensive security scoring. Zero data persistence, complete session isolation, automatic report destruction.</p>
+                </div>
+            </div>
+
+            <section class="feature-cards">
+                <div class="card"><h3>Auto-Destruct</h3><p>Reports automatically deleted after 10 minutes. Manual deletion available anytime.</p></div>
+                <div class="card"><h3>Real-Time Analysis</h3><p>Instant CVE detection, OCR processing, and vulnerability scoring with no data persistence.</p></div>
+                <div class="card"><h3>Export Reports</h3><p>Download comprehensive audit reports in PDF and CSV formats before auto-deletion.</p></div>
+                <div class="card"><h3>Session Isolation</h3><p>Each audit session is completely isolated. Multiple auditors can work simultaneously.</p></div>
+            </section>
+        </div>
+
+        <div id="start-audit-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>Start Your Security Audit</h2>
+                <div class="form-group">
+                    <label for="auditor-name">Auditor Name</label>
+                    <input type="text" id="auditor-name" value="Jane Doe" placeholder="e.g., John Smith" />
+                </div>
+                <div class="form-group">
+                    <label for="room-location">Room / Location</label>
+                    <input type="text" id="room-location" value="Server Room A1" placeholder="e.g., Server Room 1" />
+                </div>
+                <div class="notice">
+                    <h4>Privacy Notice</h4>
+                    <p>All audit data is processed <strong>in-memory only</strong>. No information is persisted to disk or logs. Reports auto-destruct after 10 minutes for complete data protection.</p>
+                </div>
+                <button id="modal-continue-button" class="btn blue-btn full-width">
+                    Continue to Audit
+                </button>
+            </div>
+        </div>
+
+
+        <div id="audit-form" class="view-container hidden">
+            
+            <div class="info-bar">
+                <button onclick="navigate('landing')" class="back-btn">
+                    &#x2190; Back to Landing
+                </button>
+                <span class="session-info">Room: <span id="session-room">N/A</span> | Auditor: <span id="session-auditor">N/A</span></span>
+            </div>
+
+            <div class="step-navigation">
+                <div class="step active">
+                    <div class="step-circle blue">1</div>
+                    <p>Upload</p>
+                </div>
+                <div class="step-line active"></div>
+                <div class="step">
+                    <div class="step-circle gray">2</div>
+                    <p>Analyze</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-circle gray">3</div>
+                    <p>Review</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-circle gray">4</div>
+                    <p>Export</p>
+                </div>
+            </div>
+
+            <div class="form-sections">
+                
+                <section class="card-section">
+                    <h2>Device Evidence Collection</h2>
+                    <div id="upload-zone" class="upload-area">
+                        <div class="upload-icon">&#x2191;</div>
+                        <p class="upload-main-text">Drop images here or click to upload</p>
+                        <p class="upload-sub-text">Support for device photos, labels, or serial number slips</p>
+                        <input type="file" multiple class="hidden-input" id="file-upload" accept="image/*">
+                    </div>
+                    
+                    <div id="image-preview" class="image-gallery">
+                        </div>
+
+                    <h3 class="subsection-title">Manual Device Entry</h3>
+                    <div class="device-entry-form">
+                        <div class="form-group">
+                            <label for="device-name">Device Name</label>
+                            <input type="text" id="device-name" placeholder="e.g., Cisco Switch">
+                        </div>
+                        <div class="form-group">
+                            <label for="device-model">Model</label>
+                            <input type="text" id="device-model" placeholder="e.g., Catalyst 2960-X">
+                        </div>
+                        <div class="form-group">
+                            <label for="firmware-version">Firmware Version</label>
+                            <input type="text" id="firmware-version" placeholder="e.g., 15.2(7)E3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button id="add-device-button" class="btn green-btn">
+                            + Add Device
+                        </button>
+                    </div>
+
+                    <div id="device-list" class="device-list">
+                        <h4 class="device-list-header">Devices to Analyze (0)</h4>
+                        </div>
+                </section>
+
+                <section class="card-section">
+                    <h2>Room & Coverage Details</h2>
+                    <div class="grid-2-col">
+                        <div class="form-group">
+                            <label for="camera-coverage" class="bold-label">Camera Coverage Status</label>
+                            <select id="camera-coverage" class="select-input">
+                                <option value="full">Full View (100% Coverage)</option>
+                                <option value="partial">Partial View (60% Coverage)</option>
+                                <option value="blindspot">Blind Spot (20% Coverage)</option>
+                                <option value="none">None (0% Coverage)</option>
+                            </select>
+                            <p class="sub-text">This score contributes to the overall safety rating.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card-section">
+                    <h2>Physical Security Checklist</h2>
+                    
+                    <div class="progress-summary">
+                        <span>Overall Progress</span>
+                        <div class="progress-counts">
+                            <span class="pass-count"><span id="pass-count">0</span> Pass</span>
+                            <span class="fail-count"><span id="fail-count">0</span> Fail</span>
+                            <span class="na-count"><span id="na-count">22</span> N/A</span>
+                        </div>
+                    </div>
+
+                    <div id="checklist-container" class="checklist-container">
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('fire-safety-items', 'fire-safety-icon')">
+                                <span>Fire Safety & Emergency Response</span>
+                                <span class="item-count">7 items</span>
+                                <span class="toggle-icon" id="fire-safety-icon">&#9660;</span>
+                            </button>
+                            <div id="fire-safety-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="fireExtinguisher">Fire extinguisher present and accessible</span>
+                                    <div class="check-group-container" data-item-id="extinguisher" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="fireAlarm">Fire alarm system functional</span>
+                                    <div class="check-group-container" data-item-id="fireAlarm" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="emergencyExit">Emergency exits clearly marked and unobstructed</span>
+                                    <div class="check-group-container" data-item-id="emergencyExit" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="smokeDetector">Smoke detectors installed and operational</span>
+                                    <div class="check-group-container" data-item-id="smokeDetector" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="sprinklerSystem">Sprinkler system functional and tested</span>
+                                    <div class="check-group-container" data-item-id="sprinklerSystem" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="fireDrill">Fire evacuation plan posted and drills conducted</span>
+                                    <div class="check-group-container" data-item-id="fireDrill" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="emergencyLighting">Emergency lighting functional</span>
+                                    <div class="check-group-container" data-item-id="emergencyLighting" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('access-control-items', 'access-control-icon')">
+                                <span>Access Control & Perimeter Security</span>
+                                <span class="item-count">9 items</span>
+                                <span class="toggle-icon" id="access-control-icon">&#9660;</span>
+                            </button>
+                            <div id="access-control-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="doorLocks">Main entrance door locks functional</span>
+                                    <div class="check-group-container" data-item-id="doorLocks" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="accessPoints">Unauthorized access points secured</span>
+                                    <div class="check-group-container" data-item-id="accessPoints" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="badgeSystem">Access badge system operational</span>
+                                    <div class="check-group-container" data-item-id="badgeSystem" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="visitorLog">Visitor log maintained and monitored</span>
+                                    <div class="check-group-container" data-item-id="visitorLog" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="windowSecurity">Windows secured and tamper-resistant</span>
+                                    <div class="check-group-container" data-item-id="windowSecurity" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="perimeterFence">Perimeter fencing intact and monitored</span>
+                                    <div class="check-group-container" data-item-id="perimeterFence" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="motionSensors">Motion detection sensors functional</span>
+                                    <div class="check-group-container" data-item-id="motionSensors" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="intrusionAlarm">Intrusion alarm system operational</span>
+                                    <div class="check-group-container" data-item-id="intrusionAlarm" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="secureStorage">Secure storage areas properly locked</span>
+                                    <div class="check-group-container" data-item-id="secureStorage" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('environmental-items', 'environmental-icon')">
+                                <span>Environmental & Infrastructure Security</span>
+                                <span class="item-count">6 items</span>
+                                <span class="toggle-icon" id="environmental-icon">&#9660;</span>
+                            </button>
+                            <div id="environmental-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="climateControl">Climate control system functional</span>
+                                    <div class="check-group-container" data-item-id="climateControl" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="powerBackup">Power backup/UPS system operational</span>
+                                    <div class="check-group-container" data-item-id="powerBackup" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="waterLeak">Water leak detection system functional</span>
+                                    <div class="check-group-container" data-item-id="waterLeak" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="cableManagement">Network cables properly secured and organized</span>
+                                    <div class="check-group-container" data-item-id="cableManagement" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="serverRack">Server racks properly secured and locked</span>
+                                    <div class="check-group-container" data-item-id="serverRack" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="ventilation">Proper ventilation and air quality maintained</span>
+                                    <div class="check-group-container" data-item-id="ventilation" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('surveillance-items', 'surveillance-icon')">
+                                <span>Surveillance & Monitoring</span>
+                                <span class="item-count">7 items</span>
+                                <span class="toggle-icon" id="surveillance-icon">&#9660;</span>
+                            </button>
+                            <div id="surveillance-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="cameraPlacement">Security cameras strategically placed</span>
+                                    <div class="check-group-container" data-item-id="cameraPlacement" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="cameraRecording">Camera recording system operational</span>
+                                    <div class="check-group-container" data-item-id="cameraRecording" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="cameraMaintenance">Cameras regularly maintained and cleaned</span>
+                                    <div class="check-group-container" data-item-id="cameraMaintenance" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="nightVision">Night vision cameras functional</span>
+                                    <div class="check-group-container" data-item-id="nightVision" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="videoStorage">Video storage capacity adequate</span>
+                                    <div class="check-group-container" data-item-id="videoStorage" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="monitoringStation">Monitoring station staffed and operational</span>
+                                    <div class="check-group-container" data-item-id="monitoringStation" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="cameraCoverage">Camera coverage eliminates blind spots</span>
+                                    <div class="check-group-container" data-item-id="cameraCoverageCheck" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('personnel-items', 'personnel-icon')">
+                                <span>Personnel & Access Management</span>
+                                <span class="item-count">7 items</span>
+                                <span class="toggle-icon" id="personnel-icon">&#9660;</span>
+                            </button>
+                            <div id="personnel-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="backgroundChecks">Background checks conducted for staff</span>
+                                    <div class="check-group-container" data-item-id="backgroundChecks" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="accessRevocation">Access revocation process in place</span>
+                                    <div class="check-group-container" data-item-id="accessRevocation" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="securityTraining">Security training provided to personnel</span>
+                                    <div class="check-group-container" data-item-id="securityTraining" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="idBadges">ID badges required and verified</span>
+                                    <div class="check-group-container" data-item-id="idBadges" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="escortPolicy">Visitor escort policy enforced</span>
+                                    <div class="check-group-container" data-item-id="escortPolicy" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="accessLogs">Access logs maintained and reviewed</span>
+                                    <div class="check-group-container" data-item-id="accessLogs" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="securityPersonnel">Security personnel present during operations</span>
+                                    <div class="check-group-container" data-item-id="securityPersonnel" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('barriers-items', 'barriers-icon')">
+                                <span>Physical Barriers & Deterrents</span>
+                                <span class="item-count">7 items</span>
+                                <span class="toggle-icon" id="barriers-icon">&#9660;</span>
+                            </button>
+                            <div id="barriers-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="bollards">Bollards or vehicle barriers installed</span>
+                                    <div class="check-group-container" data-item-id="bollards" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="reinforcedDoors">Reinforced doors on critical areas</span>
+                                    <div class="check-group-container" data-item-id="reinforcedDoors" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="securityGlass">Security glass on windows and doors</span>
+                                    <div class="check-group-container" data-item-id="securityGlass" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="locksUpgrade">High-security locks installed</span>
+                                    <div class="check-group-container" data-item-id="locksUpgrade" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="lighting">Adequate security lighting installed</span>
+                                    <div class="check-group-container" data-item-id="lighting" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="barrierGates">Barrier gates functional and monitored</span>
+                                    <div class="check-group-container" data-item-id="barrierGates" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="signage">Security warning signage clearly visible</span>
+                                    <div class="check-group-container" data-item-id="securitySignage" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('network-items', 'network-icon')">
+                                <span>Network & Physical Security</span>
+                                <span class="item-count">7 items</span>
+                                <span class="toggle-icon" id="network-icon">&#9660;</span>
+                            </button>
+                            <div id="network-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="firewallConfig">Physical firewall/network equipment secured</span>
+                                    <div class="check-group-container" data-item-id="firewallConfig" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="networkSegmentation">Network equipment physically isolated</span>
+                                    <div class="check-group-container" data-item-id="networkSegmentation" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="wifiSecurity">WiFi access points physically secured</span>
+                                    <div class="check-group-container" data-item-id="wifiSecurity" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="dataEncryption">Physical data storage devices encrypted</span>
+                                    <div class="check-group-container" data-item-id="dataEncryption" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="vpnAccess">VPN hardware physically secured</span>
+                                    <div class="check-group-container" data-item-id="vpnAccess" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="networkMonitoring">Network monitoring equipment secured</span>
+                                    <div class="check-group-container" data-item-id="networkMonitoring" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="serverPhysical">Server physical access restricted</span>
+                                    <div class="check-group-container" data-item-id="serverPhysical" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('incident-items', 'incident-icon')">
+                                <span>Incident Response & Procedures</span>
+                                <span class="item-count">6 items</span>
+                                <span class="toggle-icon" id="incident-icon">&#9660;</span>
+                            </button>
+                            <div id="incident-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="incidentPlan">Incident response plan documented</span>
+                                    <div class="check-group-container" data-item-id="incidentPlan" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="emergencyContacts">Emergency contact list accessible</span>
+                                    <div class="check-group-container" data-item-id="emergencyContacts" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="responseTeam">Response team identified and trained</span>
+                                    <div class="check-group-container" data-item-id="responseTeam" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="communicationPlan">Communication plan for incidents</span>
+                                    <div class="check-group-container" data-item-id="communicationPlan" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="drillConducted">Security drills conducted regularly</span>
+                                    <div class="check-group-container" data-item-id="drillConducted" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="incidentLog">Incident log maintained and reviewed</span>
+                                    <div class="check-group-container" data-item-id="incidentLog" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-section">
+                            <button class="category-toggle" onclick="toggleCategory('compliance-items', 'compliance-icon')">
+                                <span>Compliance & Documentation</span>
+                                <span class="item-count">6 items</span>
+                                <span class="toggle-icon" id="compliance-icon">&#9660;</span>
+                            </button>
+                            <div id="compliance-items" class="checklist-items hidden">
+                                <div class="check-item"><span data-label="securityPolicy">Security policy documented and accessible</span>
+                                    <div class="check-group-container" data-item-id="securityPolicy" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="auditTrail">Physical access audit trail maintained</span>
+                                    <div class="check-group-container" data-item-id="auditTrail" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="complianceStandards">Compliance standards met and documented</span>
+                                    <div class="check-group-container" data-item-id="complianceStandards" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="riskAssessment">Risk assessment conducted regularly</span>
+                                    <div class="check-group-container" data-item-id="riskAssessment" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="documentation">Security documentation up to date</span>
+                                    <div class="check-group-container" data-item-id="documentation" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                                <div class="check-item"><span data-label="vendorSecurity">Vendor security requirements enforced</span>
+                                    <div class="check-group-container" data-item-id="vendorSecurity" data-state="na">
+                                        <button class="check-btn pass-btn" data-state="pass" title="Pass">&#x2713;</button>
+                                        <button class="check-btn fail-btn" data-state="fail" title="Fail">&#x2715;</button>
+                                        <button class="check-btn na-btn active-na" data-state="na" title="Not Applicable">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-check-section">
+                        <button id="add-check-button" class="btn light-blue-btn">
+                            + Add Custom Check
+                        </button>
+                        
+                        <div id="custom-check-input" class="custom-check-input hidden">
+                            <input type="text" id="new-check-label" placeholder="Enter new physical security check">
+                            <button id="commit-new-check" class="btn blue-btn small">Add</button>
+                            <button id="cancel-new-check" class="btn gray-btn small">Cancel</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card-section api-config">
+                    <button class="category-toggle config-toggle" onclick="toggleCategory('api-config-body', 'api-config-icon')">
+                        <h2>API Configuration <span>(Optional)</span></h2>
+                        <span class="toggle-icon" id="api-config-icon">&#9660;</span>
+                    </button>
+                    
+                    <div id="api-config-body" class="config-body hidden">
+                        <!-- ChatGPT API Section -->
+                        <div class="api-section">
+                            <button class="api-toggle" onclick="toggleCategory('chatgpt-api-body', 'chatgpt-api-icon')">
+                                <span class="api-name">ChatGPT API</span>
+                                <span class="toggle-icon" id="chatgpt-api-icon">&#9660;</span>
+                            </button>
+                            <div id="chatgpt-api-body" class="api-body hidden">
+                                <div class="form-group">
+                                    <label for="chatgpt-api-key">API Key</label>
+                                    <input type="password" id="chatgpt-api-key" placeholder="Enter your ChatGPT API key" value="" />
+                                    <p class="sub-text">Your API key is stored locally and never sent to external servers.</p>
+                                </div>
+                                <div class="form-actions">
+                                    <button id="save-chatgpt-api" class="btn blue-btn small">Save API Key</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gemini API Section -->
+                        <div class="api-section">
+                            <button class="api-toggle" onclick="toggleCategory('gemini-api-body', 'gemini-api-icon')">
+                                <span class="api-name">Gemini API</span>
+                                <span class="toggle-icon" id="gemini-api-icon">&#9660;</span>
+                            </button>
+                            <div id="gemini-api-body" class="api-body hidden">
+                                <div class="form-group">
+                                    <label for="gemini-api-key">API Key</label>
+                                    <input type="password" id="gemini-api-key" placeholder="Enter your Gemini API key" value="" />
+                                    <p class="sub-text">Your API key is stored locally and never sent to external servers.</p>
+                                </div>
+                                <div class="form-actions">
+                                    <button id="save-gemini-api" class="btn blue-btn small">Save API Key</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="form-actions-footer">
+                    <button id="analyze-button" class="btn blue-btn large">
+                        Proceed to Analysis (Step 2)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main_page.js"></script>
+</body>
+</html>

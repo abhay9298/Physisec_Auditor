@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physisec Auditor - Report</title>
+    <link rel="stylesheet" href="report_page.css">
+    <script src="html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div id="main-container">
+
+        <header id="main-header">
+            <h1 onclick="navigate('landing')">Physisec Auditor</h1>
+        </header>
+
+        <div id="report-page" class="view-container">
+            
+            <div class="info-bar">
+                <button onclick="navigate('audit-form')" class="back-btn">
+                    &#x2190; Back to Form
+                </button>
+                <span class="session-info">Session: <span id="report-room">N/A</span></span>
+            </div>
+
+            <div class="step-navigation">
+                <div class="step complete">
+                    <div class="step-circle green">&#x2713;</div>
+                    <p>Upload</p>
+                </div>
+                <div class="step-line green-line"></div>
+                <div class="step active">
+                    <div class="step-circle blue">2</div>
+                    <p>Result</p>
+                </div>
+            </div>
+
+            <div id="report-content" class="report-body">
+                
+                <div class="auto-destruct-bar">
+                    <div class="timer-info">
+                        <span class="destruct-icon">&#x231B;</span>
+                        <span class="destruct-title">Report Auto-Destruct</span>
+                        <span class="destruct-sub">All data will be deleted in</span>
+                    </div>
+                    <div class="timer-controls">
+                        <span id="destruct-timer" class="timer-display">10:00</span>
+                        <button onclick="clearSession()" class="btn delete-btn">
+                            <span class="delete-icon">&#x2715;</span> Delete Now
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    <div class="main-column">
+                        
+                        <div class="score-cards">
+                            <div class="card-section safety-score-card">
+                                <h3>Room Safety Score</h3>
+                                <div class="score-display">
+                                    <span id="final-score" class="score-value">72</span><span class="score-max">/100</span>
+                                </div>
+                                <p class="score-subtext">Based on comprehensive security analysis</p>
+                            </div>
+                            
+                            <div class="card-section score-breakdown-card">
+                                <h3>Score Breakdown</h3>
+                                <div id="score-breakdown-details" class="breakdown-details">
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="card-section vulnerabilities-card">
+                            <h2>Devices & Vulnerabilities</h2>
+                            
+                            <div class="tab-navigation" id="vulnerability-tabs">
+                                <button class="tab-btn active-tab" data-tab="devices">Devices</button>
+                                <button class="tab-btn" data-tab="cves">CVEs</button>
+                                <button class="tab-btn" data-tab="evidence">Evidence</button>
+                            </div>
+                            
+                            <div id="tab-devices" class="tab-content">
+                                <div id="device-vulnerability-list"></div>
+                            </div>
+
+                            <div id="tab-cves" class="tab-content hidden">
+                                <h3 class="subsection-title">Vulnerability Summary</h3>
+                                <div id="cve-summary-list" class="cve-summary-list"></div>
+                                <h3 class="subsection-title all-cves-title">All Detected CVEs</h3>
+                                <div id="cve-full-list" class="cve-full-list"></div>
+                            </div>
+
+                            <div id="tab-evidence" class="tab-content hidden">
+                                <h3 class="subsection-title">Evidence Gallery</h3>
+                                <div id="report-image-preview" class="image-gallery"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="side-column">
+                        <div class="card-section export-card">
+                            <h3>Export Report</h3>
+                            <div class="export-buttons">
+                                <button onclick="downloadPdf()" class="btn blue-btn full-width download-btn">
+                                    <span class="download-icon">&#x2193;</span> Download PDF
+                                </button>
+                                <button onclick="downloadCsv()" class="btn gray-btn full-width download-btn">
+                                    <span class="download-icon">&#x2193;</span> Download CSV
+                                </button>
+                            </div>
+                            <p class="export-subtext">Export before auto-destruct timer expires</p>
+                        </div>
+                        
+                        <div class="card-section physical-summary-card">
+                            <h3>Physical Control Summary</h3>
+                            <div id="physical-check-summary" class="physical-summary">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div> </div>
+    </div>
+
+    <script src="report_page.js"></script>
+</body>
+</html>
