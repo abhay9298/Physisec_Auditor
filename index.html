@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="refresh" content="0; url=main_page.html">
     <title>Redirecting…</title>
+    <script>
+      // JS fallback if meta refresh doesn't work
+      try { window.location.replace("main_page.html"); } catch(e){}
+    </script>
   </head>
   <body>
     Redirecting to <a href="main_page.html">main page</a>.
